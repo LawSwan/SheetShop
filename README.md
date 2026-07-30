@@ -1,6 +1,8 @@
 
   # SheetShop
 
+  E-Commerce / Education
+
   This is a code bundle for SheetShop. The original project is available at https://www.figma.com/design/Oa1Dci8CZ5p8zSo2uCPSPD/Project-Plan-Slide.
 
   ## Running the code
