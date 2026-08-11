@@ -154,6 +154,7 @@ const INSTRUMENTS = ["All", "Piano", "Violin", "Guitar", "Saxophone"];
 const GenreChart = lazy(() => import("./components/GenreChart.tsx"));
 const PreviewModal = lazy(() => import("./components/PreviewModal.tsx"));
 const YouTubeModal = lazy(() => import("./components/YouTubeModal.tsx"));
+const CheckoutModal = lazy(() => import("./components/CheckoutModal.tsx"));
 
 // ─── Score Card ───────────────────────────────────────────────────────────────
 
@@ -259,6 +260,7 @@ export default function App() {
   const [previewScore, setPreviewScore] = useState<Score | null>(null);
   const [watchScore, setWatchScore] = useState<Score | null>(null);
   const [cartOpen, setCartOpen] = useState(false);
+  const [checkoutItems, setCheckoutItems] = useState<Score[] | null>(null);
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase();
@@ -287,6 +289,11 @@ export default function App() {
     const s = ALL_SCORES.find((s) => s.id === id);
     return sum + (s?.price ?? 0);
   }, 0);
+
+  const handleCheckout = () => {
+    setCheckoutItems(Array.from(cart).map((id) => ALL_SCORES.find((s) => s.id === id)!));
+    setCartOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground" style={{ fontFamily: "'DM Sans', sans-serif" }}>
@@ -377,6 +384,7 @@ export default function App() {
                   </span>
                 </div>
                 <button
+                  onClick={handleCheckout}
                   className="w-full py-2.5 rounded text-sm font-semibold transition-colors"
                   style={{ backgroundColor: "#d4a843", color: "#0d0c14" }}
                 >
@@ -564,6 +572,26 @@ export default function App() {
           }
         >
           <YouTubeModal score={watchScore} onClose={() => setWatchScore(null)} />
+        </Suspense>
+      )}
+      {checkoutItems && (
+        <Suspense
+          fallback={
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              style={{ backgroundColor: "rgba(13,12,20,0.9)", backdropFilter: "blur(10px)" }}
+            >
+              <div className="bg-card border border-border rounded-lg px-6 py-4 text-sm text-muted-foreground">
+                Loading checkout...
+              </div>
+            </div>
+          }
+        >
+          <CheckoutModal
+            items={checkoutItems}
+            onClose={() => setCheckoutItems(null)}
+            onComplete={() => setCart(new Set())}
+          />
         </Suspense>
       )}
     </div>
