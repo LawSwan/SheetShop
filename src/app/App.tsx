@@ -316,10 +316,18 @@ export default function App() {
             />
             <input
               type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search title, composer, instrument…"
-              className="w-full pl-9 pr-4 py-2 rounded-md text-sm bg-secondary/60 border border-border placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/40 transition-all"
+  value={query}
+  onChange={(e) => {
+    const sanitizedInput = e.target.value
+      .replace(/[<>]/g, "")
+      .slice(0, 100);
+
+    setQuery(sanitizedInput);
+  }}
+  placeholder="Search title, composer, instrument…"
+  maxLength={100}
+  aria-label="Search sheet music"
+  className="w-full pl-9 pr-4 py-2 rounded-md text-sm bg-secondary/60 border border-border placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/40 transition-all"
             />
             {query && (
               <button
